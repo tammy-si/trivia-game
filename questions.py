@@ -52,17 +52,25 @@ class Interface:
         self.button3.grid(row=2, column=0, padx=20, pady=20)
         self.button4.grid(row=2, column=1, padx=20, pady=20)
 
+        self.resultLabel = tkinter.Label(self.window, text='')
+        self.resultLabel.grid(columnspan=2)
+
     def get_next_question(self, question_bank):
         current_question = question_bank.get_current_question()
         self.question_box.config(text=current_question.question)
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
         answer_button = l.pop(random.randrange(len(l)))
-        answer_button.config(text=current_question.answer)
+        answer_button.config(text=current_question.answer, command= lambda: self.show_result(True))
         # now assign the wrong answers to the other buttons
         for i in range(len(l)):
-            l[i].config(text=current_question.wrong_answers[i])
+            l[i].config(text=current_question.wrong_answers[i], command= lambda: self.show_result(False))
 
+    def show_result(self, result):
+        if result == True:
+            self.resultLabel.config(text="Correct")
+        else:
+            self.resultLabel.config(text="Incorrect")
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
