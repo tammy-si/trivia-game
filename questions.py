@@ -2,6 +2,7 @@ import requests
 import tkinter
 from html import unescape
 import random
+import time
 
 # actual question
 class Question:
@@ -17,7 +18,7 @@ class QuestionBank:
         request = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
         results = request.json()['results']
         self.questions = []
-        self.question_num = 0
+        self.question_num = -1
         for question in results:
             print(question)
             new_question = Question(question)
@@ -30,6 +31,7 @@ class QuestionBank:
             print(question.wrong_answers)
 
     def get_current_question(self):
+        self.question_num += 1
         return self.questions[self.question_num]
 
 # quiz interface
@@ -39,7 +41,8 @@ class Interface:
         self.window.title("Trivia Game")
         self.window.minsize(height=400, width=500)
         self.window.resizable(False, False)
-
+        self.all_questions = questionsBank
+        
         self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, background='red')
         self.question_box.grid(columnspan=2)
 
@@ -55,8 +58,9 @@ class Interface:
         self.resultLabel = tkinter.Label(self.window, text='')
         self.resultLabel.grid(columnspan=2)
 
-    def get_next_question(self, question_bank):
-        current_question = question_bank.get_current_question()
+    def get_next_question(self):
+        self.resultLabel.config(text=" ")
+        current_question = self.all_questions.get_current_question()
         self.question_box.config(text=current_question.question)
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
@@ -69,11 +73,13 @@ class Interface:
     def show_result(self, result):
         if result == True:
             self.resultLabel.config(text="Correct")
+            self.get_next_question()
         else:
             self.resultLabel.config(text="Incorrect")
+            self.get_next_question()
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
-interface.get_next_question(questionsBank)
+interface.get_next_question()
 
 interface.window.mainloop()
