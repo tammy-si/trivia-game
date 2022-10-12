@@ -6,6 +6,7 @@ import time
 
 # actual question
 class Question:
+    # question info
     def __init__(self, question):
         self.question = unescape(question['question'])
         self.answer = unescape(question['correct_answer'])
@@ -15,23 +16,22 @@ class Question:
 # holds the questions
 class QuestionBank:
     def __init__(self):
+        # fetching the questions from the website
         request = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
         results = request.json()['results']
         self.questions = []
-        self.question_num = -1
+        self.question_num = 0
         for question in results:
-            print(question)
             new_question = Question(question)
             self.questions.append(new_question)
 
-        for question in self.questions:
-            print(question.question)
-            print(question.answer)
-            print(question.type)
-            print(question.wrong_answers)
+        for i, question in enumerate(self.questions):
+            print(i)
+            print(question.question, question.answer) 
+            print()           
 
-    def get_current_question(self):
-        self.question_num += 1
+
+    def get_question(self):
         return self.questions[self.question_num]
 
 # quiz interface
@@ -41,6 +41,7 @@ class Interface:
         self.window.title("Trivia Game")
         self.window.minsize(height=400, width=500)
         self.window.resizable(False, False)
+        # self.all_questions points to the same questionBank that was made earlier. They have the same id
         self.all_questions = questionsBank
         
         self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, background='red')
@@ -59,8 +60,9 @@ class Interface:
         self.resultLabel.grid(columnspan=2)
 
     def get_next_question(self):
+        print(self.all_questions.question_num)
         self.resultLabel.config(text=" ")
-        current_question = self.all_questions.get_current_question()
+        current_question = self.all_questions.get_question()
         self.question_box.config(text=current_question.question)
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
@@ -69,6 +71,7 @@ class Interface:
         # now assign the wrong answers to the other buttons
         for i in range(len(l)):
             l[i].config(text=current_question.wrong_answers[i], command= lambda: self.show_result(False))
+        self.all_questions.question_num += 1
 
     def show_result(self, result):
         if result == True:
@@ -77,9 +80,9 @@ class Interface:
         else:
             self.resultLabel.config(text="Incorrect")
             self.get_next_question()
+            
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
 interface.get_next_question()
-
 interface.window.mainloop()
