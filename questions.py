@@ -59,6 +59,8 @@ class Interface:
         self.resultLabel = tkinter.Label(self.window, text='')
         self.resultLabel.grid(columnspan=2)
 
+        self.next_button = tkinter.Button(self.window, text="Next question", command=self.get_next_question)
+
     def get_next_question(self):
         print(self.all_questions.question_num)
         self.resultLabel.config(text=" ")
@@ -72,15 +74,14 @@ class Interface:
         for i in range(len(l)):
             l[i].config(text=current_question.wrong_answers[i], command= lambda: self.show_result(False))
         self.all_questions.question_num += 1
+        self.next_button.grid_forget()
 
     def show_result(self, result):
         if result == True:
             self.resultLabel.config(text="Correct")
-            self.get_next_question()
         else:
             self.resultLabel.config(text="Incorrect")
-            self.get_next_question()
-            
+        self.next_button.grid(columnspan=2)
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
