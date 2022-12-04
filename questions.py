@@ -47,14 +47,15 @@ class Interface:
         self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, background='red')
         self.question_box.grid(columnspan=2)
 
+
         self.button1 = tkinter.Button(self.window, text='Button1')
         self.button2 = tkinter.Button(self.window, text='button2')
         self.button3 = tkinter.Button(self.window, text='button3')
         self.button4 = tkinter.Button(self.window, text='button4')
-        self.button1.grid(row=1, column=0, padx=20, pady=20)
-        self.button2.grid(row=1, column = 1, padx=20, pady=20)
-        self.button3.grid(row=2, column=0, padx=20, pady=20)
-        self.button4.grid(row=2, column=1, padx=20, pady=20)
+        self.button1.grid(row=2, column=0, padx=20, pady=20)
+        self.button2.grid(row=2, column = 1, padx=20, pady=20)
+        self.button3.grid(row=3, column=0, padx=20, pady=20)
+        self.button4.grid(row=3, column=1, padx=20, pady=20)
 
         self.resultLabel = tkinter.Label(self.window, text='')
         self.resultLabel.grid(columnspan=2)
@@ -65,7 +66,7 @@ class Interface:
         print(self.all_questions.question_num)
         self.resultLabel.config(text=" ")
         current_question = self.all_questions.get_question()
-        self.question_box.config(text=current_question.question)
+        self.question_box.config(text=f"Question {self.all_questions.question_num+1}: {current_question.question}")
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
         answer_button = l.pop(random.randrange(len(l)))
@@ -77,6 +78,7 @@ class Interface:
         self.next_button.grid_forget()
 
     def show_result(self, result):
+        # after the user clicks on a question show the result
         if result == True:
             self.resultLabel.config(text="Correct")
         else:
