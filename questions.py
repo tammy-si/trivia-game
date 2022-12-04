@@ -69,14 +69,14 @@ class Interface:
     def get_next_question(self):
         self.resultLabel.config(text=" ")
         current_question = self.all_questions.get_question()
-        self.question_box.config(text=f"Question {self.all_questions.question_num+1} {current_question.question}")
+        self.question_box.config(text=f"Question {self.all_questions.question_num+1}: {current_question.question}")
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
         answer_button = l.pop(random.randrange(len(l)))
-        answer_button.config(text=current_question.answer, command= lambda: self.show_result(True))
+        answer_button.config(text=current_question.answer, command= lambda: self.show_result(True), state='normal', disabledforeground='green')
         # now assign the wrong answers to the other buttons
         for i in range(len(l)):
-            l[i].config(text=current_question.wrong_answers[i], command= lambda: self.show_result(False))
+            l[i].config(text=current_question.wrong_answers[i],command= lambda: self.show_result(False), state='normal', disabledforeground='red')
         self.all_questions.question_num += 1
         self.next_button.grid_forget()
 
@@ -90,9 +90,9 @@ class Interface:
         else:
             self.resultLabel.config(text="Incorrect")
         self.next_button.grid(columnspan=2)
-        # also make sure to remove the commands from the answer buttons so this doesn't run twice.
+        # also make sure to disable answer buttons so this doesn't run twice.
         for button in [self.button1, self.button2, self.button3, self.button4]:
-            button.config(command="")
+            button.config(state='disabled')
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
