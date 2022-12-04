@@ -42,11 +42,16 @@ class Interface:
         self.window.resizable(False, False)
         # self.all_questions points to the same questionBank that was made earlier. They have the same id
         self.all_questions = questionsBank
+
+        # to keep track of the score
+        self.score = 0
+        self.score_label = tkinter.Label(self.window, text="Score: 0")
+        self.score_label.grid()
         
         self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, background='red')
         self.question_box.grid(columnspan=2)
 
-
+        # these are gonna be the answer buttons
         self.button1 = tkinter.Button(self.window, text='Button1')
         self.button2 = tkinter.Button(self.window, text='button2')
         self.button3 = tkinter.Button(self.window, text='button3')
@@ -62,7 +67,6 @@ class Interface:
         self.next_button = tkinter.Button(self.window, text="Next question", command=self.get_next_question)
 
     def get_next_question(self):
-        print(self.all_questions.question_num)
         self.resultLabel.config(text=" ")
         current_question = self.all_questions.get_question()
         self.question_box.config(text=f"Question {self.all_questions.question_num+1} {current_question.question}")
@@ -77,12 +81,18 @@ class Interface:
         self.next_button.grid_forget()
 
     def show_result(self, result):
+        print("Ran once")
         # after the user clicks on a question show the result
         if result == True:
             self.resultLabel.config(text="Correct")
+            self.score += 1
+            self.score_label.config(text=f"Score: {self.score}")
         else:
             self.resultLabel.config(text="Incorrect")
         self.next_button.grid(columnspan=2)
+        # also make sure to remove the commands from the answer buttons so this doesn't run twice.
+        for button in [self.button1, self.button2, self.button3, self.button4]:
+            button.config(command="")
 
 questionsBank = QuestionBank()
 interface = Interface(questionsBank)
