@@ -11,7 +11,7 @@ class Question:
         self.question = unescape(question['question'])
         self.answer = unescape(question['correct_answer'])
         self.type = unescape(question['type'])
-        self.wrong_answers = unescape(question['incorrect_answers'])
+        self.wrong_answers = [unescape(q) for q in question['incorrect_answers']]
 
 # holds the questions
 class QuestionBank:
@@ -29,7 +29,6 @@ class QuestionBank:
             print(i)
             print(question.question, question.answer) 
             print()           
-
 
     def get_question(self):
         return self.questions[self.question_num]
@@ -66,7 +65,7 @@ class Interface:
         print(self.all_questions.question_num)
         self.resultLabel.config(text=" ")
         current_question = self.all_questions.get_question()
-        self.question_box.config(text=f"Question {self.all_questions.question_num+1}: {current_question.question}")
+        self.question_box.config(text=f"Question {self.all_questions.question_num+1} {current_question.question}")
         l = [self.button1, self.button2, self.button3, self.button4]
         # make the answer_button first
         answer_button = l.pop(random.randrange(len(l)))
