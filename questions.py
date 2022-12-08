@@ -3,6 +3,7 @@ import tkinter
 from html import unescape
 import random
 import time
+from tkinter import messagebox
 
 # actual question
 class Question:
@@ -24,11 +25,6 @@ class QuestionBank:
         for question in results:
             new_question = Question(question)
             self.questions.append(new_question)
-
-        for i, question in enumerate(self.questions):
-            print(i)
-            print(question.question, question.answer) 
-            print()           
 
     def get_question(self):
         return self.questions[self.question_num]
@@ -70,10 +66,17 @@ class Interface:
         self.resultLabel.config(text=" ")
         # if there are no more questions left
         if self.all_questions.question_num > 9:
-            self.window.destroy()
-            questionsBank = QuestionBank()
-            interface = Interface(questionsBank)
-            interface.get_next_question()
+            answer = tkinter.messagebox.askyesno("Replay?", f"Your final score is {self.score}. \n Do you want to play again?")
+            # based on the users answer
+            if answer:
+                self.window.destroy()
+                questionsBank = QuestionBank()
+                interface = Interface(questionsBank)
+                interface.get_next_question()
+                return
+            else:
+                self.window.quit()
+                return
         current_question = self.all_questions.get_question()
         self.question_box.config(text=f"Question {self.all_questions.question_num+1}: {current_question.question}")
         l = [self.button1, self.button2, self.button3, self.button4]
@@ -87,7 +90,6 @@ class Interface:
         self.next_button.grid_forget()
 
     def show_result(self, result):
-        print("Ran once")
         # after the user clicks on a question show the result
         if result == True:
             self.resultLabel.config(text="Correct")
