@@ -38,7 +38,7 @@ class Interface:
     def __init__(self, questionsBank):
         self.window = tkinter.Tk()
         self.window.title("Trivia Game")
-        self.window.minsize(height=400, width=500)
+        self.window.minsize(height=300, width=300)
         self.window.resizable(False, False)
         # self.all_questions points to the same questionBank that was made earlier. They have the same id
         self.all_questions = questionsBank
@@ -48,7 +48,7 @@ class Interface:
         self.score_label = tkinter.Label(self.window, text="Score: 0")
         self.score_label.grid()
         
-        self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, background='red')
+        self.question_box = tkinter.Label(self.window, text=questionsBank.questions[0].question, pady=10, padx=20, wraplength=300)
         self.question_box.grid(columnspan=2)
 
         # these are gonna be the answer buttons
@@ -68,6 +68,12 @@ class Interface:
 
     def get_next_question(self):
         self.resultLabel.config(text=" ")
+        # if there are no more questions left
+        if self.all_questions.question_num > 9:
+            self.window.destroy()
+            questionsBank = QuestionBank()
+            interface = Interface(questionsBank)
+            interface.get_next_question()
         current_question = self.all_questions.get_question()
         self.question_box.config(text=f"Question {self.all_questions.question_num+1}: {current_question.question}")
         l = [self.button1, self.button2, self.button3, self.button4]
